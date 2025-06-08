@@ -14,6 +14,7 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import static com.aman.socio_sphere.utils.UserUtils.copyNotNullFields;
 
@@ -135,5 +136,32 @@ public class UserServiceImpl implements UserService {
         } catch (Exception e) {
             throw new RuntimeException("Exception while deleting user", e);
         }
+    }
+
+    @Override
+    public void followAndUnfollowUser(Long userId, Long userIdToBeFollowed) {
+        User user = getUserById(userId);
+        User userToBeFollowed = getUserById(userIdToBeFollowed);
+
+        List<Long> userFollowingList = user.getFollowing();
+        List<Long> userToBeFollowedFollowersList = userToBeFollowed.getFollowers();
+
+        boolean isFollowing = false;
+        if (!userFollowingList.isEmpty())
+            isFollowing = userFollowingList.contains(userIdToBeFollowed);
+
+        if (isFollowing) {
+            userFollowingList.remove(userIdToBeFollowed);
+            userToBeFollowedFollowersList.remove(userId);
+        } else {
+            userFollowingList.add(userIdToBeFollowed);
+            userToBeFollowedFollowersList.add(userId);
+        }
+
+        user.setFollowing(userFollowingList);
+        userToBeFollowed.setFollowers(userToBeFollowedFollowersList);
+
+        userRepository.save(user);
+        userRepository.save(userToBeFollowed);
     }
 }

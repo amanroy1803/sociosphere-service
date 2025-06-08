@@ -8,7 +8,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/users")
@@ -52,5 +54,15 @@ public class UserController {
     public ResponseEntity<User> deleteUserById(@PathVariable Long id) {
         userService.deleteUser(id);
         return ResponseEntity.noContent().build();
+    }
+
+    //    Follow a User
+    @PatchMapping(path = "/{userId}/follow/{userIdToBeFollowed}")
+    public ResponseEntity<String> followAndUnfollowUser(@PathVariable Long userId, @PathVariable Long userIdToBeFollowed) {
+        if (userId.equals(userIdToBeFollowed))
+            return ResponseEntity.badRequest().body(Map.of("error", "Cannot follow/unfollow yourself.").toString());
+
+        userService.followAndUnfollowUser(userId, userIdToBeFollowed);
+        return ResponseEntity.ok("user successfully followed/unfollowed");
     }
 }

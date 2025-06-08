@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -45,9 +46,15 @@ public class User {
 
     private String country;
 
-    private List<Long> followers;
+    @ElementCollection
+    @CollectionTable(name = "user_followers", joinColumns = @JoinColumn(name = "user_id"))
+    @Column(name = "follower_id")
+    private List<Long> followers = new ArrayList<>();
 
-    private List<Long> following;
+    @ElementCollection
+    @CollectionTable(name = "user_following", joinColumns = @JoinColumn(name = "user_id"))
+    @Column(name = "following_id")
+    private List<Long> following = new ArrayList<>();
 
     private Timestamp tsCreated;
 

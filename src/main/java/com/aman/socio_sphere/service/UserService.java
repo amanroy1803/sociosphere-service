@@ -11,6 +11,7 @@ public interface UserService {
     User getUserById(Long id);
     void updateUser(Long id, UserDto userDto);
     void deleteUser(Long id);
+    void followAndUnfollowUser(Long userId, Long userIdToBeFollower);
 
 //    follow and unfollow user
 }
