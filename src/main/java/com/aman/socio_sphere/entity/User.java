@@ -46,17 +46,22 @@ public class User {
 
     private String country;
 
-    @ElementCollection
-    @CollectionTable(name = "user_followers", joinColumns = @JoinColumn(name = "user_id"))
-    @Column(name = "follower_id")
-    private List<Long> followers = new ArrayList<>();
+    @ManyToMany
+    @JoinTable(
+            name = "user_following",
+            joinColumns = @JoinColumn(name = "followers_id"),
+            inverseJoinColumns = @JoinColumn(name = "following_id")
+    )
+    private List<User> following = new ArrayList<>();
 
-    @ElementCollection
-    @CollectionTable(name = "user_following", joinColumns = @JoinColumn(name = "user_id"))
-    @Column(name = "following_id")
-    private List<Long> following = new ArrayList<>();
+    @ManyToMany(mappedBy = "following")
+    private List<User> followers = new ArrayList<>();
 
     private Timestamp tsCreated;
 
     private Timestamp tsModified;
+
+    @OneToMany(mappedBy = "user")
+    private List<Post> posts;
+
 }

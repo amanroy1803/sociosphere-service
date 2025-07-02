@@ -14,9 +14,6 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
-
-import static com.aman.socio_sphere.utils.UserUtils.copyNotNullFields;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -143,19 +140,21 @@ public class UserServiceImpl implements UserService {
         User user = getUserById(userId);
         User userToBeFollowed = getUserById(userIdToBeFollowed);
 
-        List<Long> userFollowingList = user.getFollowing();
-        List<Long> userToBeFollowedFollowersList = userToBeFollowed.getFollowers();
+        List<User> userFollowingList = user.getFollowing();
+        List<User> userToBeFollowedFollowersList = userToBeFollowed.getFollowers();
 
         boolean isFollowing = false;
         if (!userFollowingList.isEmpty())
-            isFollowing = userFollowingList.contains(userIdToBeFollowed);
+            isFollowing = userFollowingList
+                    .stream()
+                    .anyMatch(currentUser -> currentUser.equals(userToBeFollowed));
 
         if (isFollowing) {
-            userFollowingList.remove(userIdToBeFollowed);
-            userToBeFollowedFollowersList.remove(userId);
+            userFollowingList.remove(userToBeFollowed);
+            userToBeFollowedFollowersList.remove(user);
         } else {
-            userFollowingList.add(userIdToBeFollowed);
-            userToBeFollowedFollowersList.add(userId);
+            userFollowingList.add(userToBeFollowed);
+            userToBeFollowedFollowersList.add(user);
         }
 
         user.setFollowing(userFollowingList);

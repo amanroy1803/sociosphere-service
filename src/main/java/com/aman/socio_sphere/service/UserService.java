@@ -7,10 +7,15 @@ import java.util.List;
 
 public interface UserService {
     UserDto createUser(UserDto userDto);
+
     List<User> getAllUsers();
+
     User getUserById(Long id);
+
     void updateUser(Long id, UserDto userDto);
+
     void deleteUser(Long id);
+
     void followAndUnfollowUser(Long userId, Long userIdToBeFollower);
 
 //    follow and unfollow user
